@@ -42,20 +42,39 @@ class Deck {
 }
 
 class WarGame {
+    deck;
+    player1Card;
+    player2Card;
+    isPlayer1Turn;
+    result;
+    id;
+    static count = 1;
     constructor() {
         this.deck = new Deck();
         this.player1Card = null;
         this.player2Card = null;
         this.isPlayer1Turn = true;
         this.result = document.getElementById('result');
+        this.id = WarGame.count;
+        WarGame.count++;
 
         const player1CardImage = document.getElementById('player1-card');
         const player2CardImage = document.getElementById('player2-card');
 
-        player1CardImage.addEventListener('click', () => this.handleCardClick('player1'));
-        player2CardImage.addEventListener('click', () => this.handleCardClick('player2'));
+        this.handler1 = () => this.handleCardClick('player1');
+        this.handler2 = () => this.handleCardClick('player2');
+
+        player1CardImage.addEventListener('click', this.handler1);
+        player2CardImage.addEventListener('click', this.handler2);
     }
 
+    unload() {
+        const player1CardImage = document.getElementById('player1-card');
+        const player2CardImage = document.getElementById('player2-card');
+
+        player1CardImage.removeEventListener('click', this.handler1);
+        player2CardImage.removeEventListener('click', this.handler2);
+    }
     handleCardClick(player) {
         if (this.deck.isEmpty()) {
             this.result.textContent = 'No more cards in the deck!';
@@ -103,5 +122,6 @@ class WarGame {
 // Initialize the game
 let game = new WarGame();
 document.getElementById("restart").addEventListener("click", () => {
+    game.unload();
     game = new WarGame();
 })
